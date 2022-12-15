@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 2800421953231521506}
   - component: {fileID: 2800421953231521532}
   - component: {fileID: 5172455112885039956}
+  - component: {fileID: 3939382216472684708}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -169,7 +170,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 2800421953265964412}
-  pw: {fileID: 217748157146136709}
+  pv: {fileID: 0}
   model: {fileID: 3034424752393188659}
   speed: 1.558
 --- !u!114 &2800421953231521532
@@ -202,6 +203,19 @@ CapsuleCollider:
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
+--- !u!114 &3939382216472684708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2800421953231521533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ac574b2a8a64407eb0261f8bdadaeba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radius: 5
 --- !u!1 &2800421953265964411
 GameObject:
   m_ObjectHideFlags: 0

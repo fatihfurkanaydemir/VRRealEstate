@@ -9,27 +9,13 @@ public class ServerManagement : MonoBehaviourPunCallbacks
   // Start is called before the first frame update
   void Start()
   {
-    //1. connect to server
-    //2. connect to lobby
-    //3. connect to room 
-    PhotonNetwork.ConnectUsingSettings(); // connect to server 
-    /*
-    PhotonNetwork.JoinRoom("room name"); // connect to room 
-    PhotonNetwork.CreateRoom("room name", room_settings); // create room
-    PhotonNetwork.JoinOrCreateRoom("room name", room_settings, TypedLobby.Default);
-    PhotonNetwork.LeaveRoom();
-    PhotonNetwork.LeaveLobby();
-     */
+    PhotonNetwork.ConnectUsingSettings();
   }
-
-
 
   public override void OnConnectedToMaster()
   {
     Debug.Log("Connected to the server");
-    PhotonNetwork.JoinLobby(); // connect to lobby
-                               //It checks/controls the connection of the server
-
+    PhotonNetwork.JoinLobby();
   }
 
   public override void OnJoinedLobby()
@@ -44,10 +30,12 @@ public class ServerManagement : MonoBehaviourPunCallbacks
   {
     Debug.Log("Connected to the Room");
     GameObject player = PhotonNetwork.Instantiate("Character", new Vector3(0, 0.2f, 0), Quaternion.identity);
+    VoiceChatManager.Instance.Join();
   }
 
   public override void OnLeftRoom()
   {
+    VoiceChatManager.Instance.Leave();
     Debug.Log("Left the Room");
   }
 
@@ -70,6 +58,4 @@ public class ServerManagement : MonoBehaviourPunCallbacks
   {
     Debug.Log("Could not create room");
   }
-
-
 }

@@ -7,16 +7,16 @@ public class PlayerMovement : MonoBehaviour
 {
   private Animator animator;
   [SerializeField] Camera cam;
-  [SerializeField] private PhotonView pw;
+  [SerializeField] private PhotonView pv;
   [SerializeField] private GameObject model;
   [Range(0.1f, 5f)][SerializeField] float speed = 3f;
   // Start is called before the first frame update
   void Start()
   {
     animator = GetComponent<Animator>();
-    pw = GetComponent<PhotonView>();
+    pv = GetComponent<PhotonView>();
 
-    if (!pw.IsMine)
+    if (!pv.IsMine)
     {
       Destroy(cam.gameObject);
       SetLayerOnAll(model, 0);
@@ -26,7 +26,13 @@ public class PlayerMovement : MonoBehaviour
   // Update is called once per frame
   void Update()
   {
-    if (!pw.IsMine) return;
+    if (Input.GetKeyDown(KeyCode.Escape))
+    {
+      Cursor.visible = !Cursor.visible;
+      Cursor.lockState = Cursor.visible ? CursorLockMode.None : CursorLockMode.Locked;
+    }
+
+    if (!pv.IsMine) return;
 
     transform.rotation = Quaternion.Euler(0, Camera.main.transform.rotation.eulerAngles.y, 0);
 

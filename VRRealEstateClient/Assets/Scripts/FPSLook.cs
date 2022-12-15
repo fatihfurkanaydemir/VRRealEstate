@@ -17,25 +17,19 @@ public class FPSLook : MonoBehaviour
   };
 
   [SerializeField] RotationAxes axes = RotationAxes.MouseX;
-  private PhotonView pw;
+  private PhotonView pv;
   float verticalRot = 0;
 
   void Start()
   {
     Cursor.lockState = CursorLockMode.Locked;
     Cursor.visible = false;
-    pw = GetComponentInParent<PhotonView>();
+    pv = GetComponentInParent<PhotonView>();
   }
 
   void Update()
   {
-    if (Input.GetKeyDown(KeyCode.Escape))
-    {
-      Cursor.visible = !Cursor.visible;
-      Cursor.lockState = Cursor.visible ? CursorLockMode.None : CursorLockMode.Locked;
-    }
-
-    if (!pw.IsMine) return;
+    if (!pv.IsMine) return;
 
     if (axes == RotationAxes.MouseX)
     {
