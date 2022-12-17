@@ -5,12 +5,11 @@
   "projects": {
     "cuba": {
       "projectType": "application",
-   
+
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss"
         }
-
       },
       "root": "",
       "sourceRoot": "src",
@@ -145,13 +144,8 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": ["src/styles.scss"],
             "scripts": []
           }
         },
@@ -174,7 +168,5 @@
   "cli": {
     "analytics": false
   },
-  "schematics": {
-  
-  }
+  "schematics": {}
 }
