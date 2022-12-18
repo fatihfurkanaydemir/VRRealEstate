@@ -20,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
     {
       Destroy(cam.gameObject);
       SetLayerOnAll(model, 0);
+      model.tag = "Untagged";
     }
   }
 
@@ -39,6 +40,7 @@ public class PlayerMovement : MonoBehaviour
     float xMovement = Input.GetAxisRaw("Horizontal");
     float zMovement = Input.GetAxisRaw("Vertical");
     float zMovementSmooth = Input.GetAxisRaw("Vertical");
+    float xMovementSmooth = Input.GetAxisRaw("Horizontal");
 
     var movementVec = new Vector3(xMovement, 0, zMovement);
     movementVec = movementVec.normalized * speed * Time.deltaTime;

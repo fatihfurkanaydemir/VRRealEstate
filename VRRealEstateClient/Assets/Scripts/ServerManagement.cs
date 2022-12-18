@@ -1,14 +1,63 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Photon.Realtime;
 using Photon.Pun;
+using UnityEngine.UI;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine.Networking;
+using System.Collections;
+using System;
+using Newtonsoft.Json;
 
 public class ServerManagement : MonoBehaviourPunCallbacks
 {
-  // Start is called before the first frame update
+  // Start is called before the first frame update7
+  private string _SelectedAvatar = "real_estate_male";
+  private string _RoomNumber = "";
+  AssetBundle _bundle;
+  [SerializeField] TMPro.TMP_InputField roomInput;
+  [SerializeField] TMPro.TMP_Text errorText;
+  [SerializeField] Canvas mainCanvas;
+  [SerializeField] Canvas gameCanvas;
   void Start()
   {
+  }
+
+  public void JoinRoom()
+  {
+    if (roomInput.text.Trim() == "")
+    {
+      errorText.text = "Please enter room number!";
+      return;
+    }
+
+    _RoomNumber = roomInput.text.Trim();
+    StartCoroutine(GetRoomByRoomNumber(_RoomNumber, RoomExists));
+  }
+
+  public void RoomExists(RoomDTO room)
+  {
+    if (room == null)
+    {
+      errorText.text = "Room with specified number does not exist";
+      return;
+    }
+
+    errorText.text = "Loading property...";
+    StartCoroutine(LoadAssetAzureRoutine(room.assetLink, PropertyLoaded));
+  }
+
+  public void PropertyLoaded(AssetBundle bundle)
+  {
+    if (bundle == null)
+    {
+      Debug.LogError("Bundle not loaded");
+      return;
+    }
+
+    var prefab = bundle.LoadAsset<GameObject>(bundle.GetAllAssetNames()[0]);
+    Instantiate(prefab);
+
     PhotonNetwork.ConnectUsingSettings();
   }
 
@@ -21,17 +70,25 @@ public class ServerManagement : MonoBehaviourPunCallbacks
   public override void OnJoinedLobby()
   {
     Debug.Log("Connected to the lobby");
-    PhotonNetwork.JoinOrCreateRoom("Room1", new RoomOptions { MaxPlayers = 5, IsOpen = true, IsVisible = true }, TypedLobby.Default);
-    //connect to random room or create 
-    //it checks the connection of the Lobby
+    PhotonNetwork.JoinOrCreateRoom(_RoomNumber, new RoomOptions { MaxPlayers = 5, IsOpen = true, IsVisible = true }, TypedLobby.Default);
   }
 
   public override void OnJoinedRoom()
   {
     Debug.Log("Connected to the Room");
-    GameObject player = PhotonNetwork.Instantiate("Character", new Vector3(0, 0.2f, 0), Quaternion.identity);
-    VoiceChatManager.Instance.Join();
+    var spawnPoint = GameObject.FindWithTag("SpawnPoint").transform.position;
+    GameObject player = PhotonNetwork.Instantiate(_SelectedAvatar, spawnPoint, Quaternion.identity);
+
+    VoiceChatManager.Instance.Join(PhotonNetwork.LocalPlayer.UserId);
+
+    mainCanvas.gameObject.SetActive(false);
+    gameCanvas.gameObject.SetActive(true);
   }
+
+  public void SelectMaleRealEstate() => _SelectedAvatar = "real_estate_male";
+  public void SelectFemaleRealEstate() => _SelectedAvatar = "real_estate_female";
+  public void SelectMale() => _SelectedAvatar = "male";
+  public void SelectFemale() => _SelectedAvatar = "female";
 
   public override void OnLeftRoom()
   {
@@ -57,5 +114,42 @@ public class ServerManagement : MonoBehaviourPunCallbacks
   public override void OnCreateRoomFailed(short returnCode, string message)
   {
     Debug.Log("Could not create room");
+  }
+
+  IEnumerator GetRoomByRoomNumber(string roomNumber, Action<RoomDTO> callback = null)
+  {
+    Debug.Log("Checking for: " + roomNumber);
+    UnityWebRequest request = UnityWebRequest.Get($"https://vrrealestateapi.azurewebsites.net/api/Room/GetByRoomNumber/{roomNumber}");
+    request.SetRequestHeader("accept", "*/*");
+    yield return request.SendWebRequest();
+    if (request.isNetworkError || request.isHttpError)
+    {
+      Debug.Log(request.error);
+      callback(null);
+      yield break;
+    }
+
+    var roomResponse = JsonConvert.DeserializeObject<RoomDTOResponse>(request.downloadHandler.text);
+
+    if (!roomResponse.succeeded)
+      callback(null);
+    else
+      callback(roomResponse.data);
+  }
+
+  public IEnumerator LoadAssetAzureRoutine(string url, Action<AssetBundle> callback = null)
+  {
+    UnityWebRequest www = UnityWebRequestAssetBundle.GetAssetBundle(url);
+    yield return www.SendWebRequest();
+
+    if (www.result != UnityWebRequest.Result.Success)
+    {
+      Debug.Log(www.error);
+      callback(null);
+    }
+    else
+    {
+      callback(DownloadHandlerAssetBundle.GetContent(www));
+    }
   }
 }

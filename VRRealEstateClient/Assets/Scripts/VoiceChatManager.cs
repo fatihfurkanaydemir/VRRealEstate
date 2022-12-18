@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+using UnityEngine.Networking;
+using System;
 
 #if (UNITY_2018_3_OR_NEWER && UNITY_ANDROID)
  using UnityEngine.Android;
@@ -12,8 +14,10 @@ using Agora.Rtc;
 public class VoiceChatManager : MonoBehaviour
 {
   private string _appID = "88ba9239783a4d82853c748fe3b8111e";
-  private string _channelName = "vrrealestate";
-  private string _token = "007eJxTYDh4vDhf2NnB6ZiM2fngwDYbu1dmWpfuH7m67CInj+yv8oUKDBYWSYmWRsaW5hbGiSYpFkYWpsbJ5iYWaanGSRaGhoap/7NnJzcEMjIcrfjKyMgAgSA+D0NZUVFqYk5qcUliSSoDAwAxJiMD";
+  private string _channelName = "vrrealestatee";
+  // private string _token = "007eJxTYDh4vDhf2NnB6ZiM2fngwDYbu1dmWpfuH7m67CInj+yv8oUKDBYWSYmWRsaW5hbGiSYpFkYWpsbJ5iYWaanGSRaGhoap/7NnJzcEMjIcrfjKyMgAgSA+D0NZUVFqYk5qcUliSSoDAwAxJiMD";
+  private string serverUrl = "https://agora-token-service-production-7f57.up.railway.app"; // The base URL to your token server. For example, https://agora-token-service-production-92ff.up.railway.app"
+  private int ExpireTime = 5 * 24 * 60 * 60; //Expire time in Seconds.
   private IRtcEngine RtcEngine;
   public static VoiceChatManager Instance;
 
@@ -94,16 +98,38 @@ public class VoiceChatManager : MonoBehaviour
 
     public override void OnError(int err, string msg)
     {
-      Debug.LogError("AGORA_ERROR: " + msg);
+      Debug.LogError("AGORA_ERROR: " + msg + " : " + err);
     }
 
   }
 
-  public void Join()
+
+  IEnumerator FetchToken(string url, string channel, string userId, int TimeToLive, Action<string> callback = null)
   {
-    RtcEngine.EnableAudio();
+    UnityWebRequest request = UnityWebRequest.Get(
+    string.Format("{0}/rtc/{1}/publisher/userAccount/{2}/?expiry={3}", url, channel, userId, TimeToLive)
+    );
+    yield return request.SendWebRequest();
+    if (request.isNetworkError || request.isHttpError)
+    {
+      Debug.Log(request.error);
+      callback(null);
+      yield break;
+    }
+    TokenStruct tokenInfo = JsonUtility.FromJson<TokenStruct>(request.downloadHandler.text);
+    callback(tokenInfo.rtcToken);
+  }
+
+  public void Join(string uid)
+  {
+    StartCoroutine(FetchToken(serverUrl, _channelName, uid, ExpireTime, this.FetchRenew));
+  }
+
+  void FetchRenew(string newToken)
+  {
     RtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_BROADCASTER);
-    RtcEngine.JoinChannel(_token, _channelName);
+    RtcEngine.EnableAudio();
+    RtcEngine.JoinChannelWithUserAccount(newToken, _channelName, PhotonNetwork.LocalPlayer.UserId);
   }
 
   public void Leave()

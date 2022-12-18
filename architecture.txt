@@ -1,0 +1,6 @@
+railway agora token service
+photon
+backend
+frontend
+vr client
+postgre database
