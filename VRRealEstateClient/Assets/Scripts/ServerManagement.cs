@@ -8,6 +8,7 @@ using UnityEngine.Networking;
 using System.Collections;
 using System;
 using Newtonsoft.Json;
+using System.IO;
 
 public class ServerManagement : MonoBehaviourPunCallbacks
 {
@@ -139,17 +140,30 @@ public class ServerManagement : MonoBehaviourPunCallbacks
 
   public IEnumerator LoadAssetAzureRoutine(string url, Action<AssetBundle> callback = null)
   {
-    UnityWebRequest www = UnityWebRequestAssetBundle.GetAssetBundle(url);
-    yield return www.SendWebRequest();
+    // UnityWebRequest www = UnityWebRequestAssetBundle.GetAssetBundle(url);
+    // yield return www.SendWebRequest();
 
-    if (www.result != UnityWebRequest.Result.Success)
+    // if (www.result != UnityWebRequest.Result.Success)
+    // {
+    //   Debug.Log(www.error);
+    //   callback(null);
+    // }
+    // else
+    // {
+    //   callback(DownloadHandlerAssetBundle.GetContent(www));
+    // }
+    var myLoadedAssetBundle = AssetBundle.LoadFromFile(Path.Combine("Assets/AssetBundles/WindowsAssetBundles/house2"));
+    yield return null;
+
+    if (myLoadedAssetBundle == null)
     {
-      Debug.Log(www.error);
+      Debug.Log("Failed to load AssetBundle!");
       callback(null);
     }
+    //set the public Asset bundle variable 
     else
     {
-      callback(DownloadHandlerAssetBundle.GetContent(www));
+      callback(myLoadedAssetBundle);
     }
   }
 }

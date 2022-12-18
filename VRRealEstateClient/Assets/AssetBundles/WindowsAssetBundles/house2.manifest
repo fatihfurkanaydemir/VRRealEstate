@@ -1,0 +1,59 @@
+ManifestFileVersion: 0
+CRC: 102606403
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 5c7a4aca8f13ccd1fdb3bdcf2f5cd1e0
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: c60be4e9feea67cd3003e8e21bf21152
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 64
+  Script: {instanceID: 0}
+- Class: 65
+  Script: {instanceID: 0}
+- Class: 74
+  Script: {instanceID: 0}
+- Class: 90
+  Script: {instanceID: 0}
+- Class: 91
+  Script: {instanceID: 0}
+- Class: 95
+  Script: {instanceID: 0}
+- Class: 108
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: e0d5557a01f4e0740bd53d6ed2ab7327, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 86ae241f95cb0464188693a338d04798, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 1e8192f35a44301488ec0f072d9a16fe, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 4b5e0617227fa4743be84f23d9e5cb42, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: ea52830e8c3e35741a451b12277dfde1, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: c60bbd51801dd3749be2ffa1cd525074, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/HousePrefabs/house2.prefab
+Dependencies: []

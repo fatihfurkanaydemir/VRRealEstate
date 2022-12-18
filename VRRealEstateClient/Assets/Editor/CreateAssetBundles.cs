@@ -11,7 +11,7 @@ public class CreateAssetBundles
     {
       Directory.CreateDirectory(assetBundleDirectory);
     }
-    BuildPipeline.BuildAssetBundles(assetBundleDirectory, BuildAssetBundleOptions.None, BuildTarget.StandaloneWindows64);
+    BuildPipeline.BuildAssetBundles(assetBundleDirectory, BuildAssetBundleOptions.CollectDependencies | BuildAssetBundleOptions.CompleteAssets, BuildTarget.StandaloneWindows64);
   }
 
   [MenuItem("Assets/Build AssetBundles/Android")]
